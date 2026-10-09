@@ -1,20 +1,38 @@
-"""Safely merge JSON updates into a JSON configuration file."""
-import json, logging
-from pathlib import Path
-from documentation import EasyToolError, atomic_write_text, load_json, require_file
-log = logging.getLogger(__name__)
+"""Update Configuration GUI placeholder and extension point."""
+from __future__ import annotations
 
-def _deep_merge(base: dict, updates: dict) -> dict:
-    for key, value in updates.items():
-        if isinstance(value, dict) and isinstance(base.get(key), dict): _deep_merge(base[key], value)
-        else: base[key] = value
-    return base
+import logging
+import tkinter as tk
+from tkinter import ttk
 
-def update_configuration(config_file: Path, updates_file: Path) -> Path:
-    config_file = require_file(config_file, suffix=".json")
-    log.info("Updating configuration %s with %s", config_file, updates_file)
-    merged = _deep_merge(load_json(config_file), load_json(updates_file))
-    try: payload = json.dumps(merged, indent=2, sort_keys=True) + "\n"
-    except (TypeError, ValueError) as exc: raise EasyToolError(f"Configuration is not JSON serializable: {exc}") from exc
-    atomic_write_text(config_file, payload)
-    log.info("Configuration updated: %s", config_file); return config_file
+from app_common import not_implemented, run_gui_action
+
+LOGGER = logging.getLogger(__name__)
+
+
+def execute_update_configuration() -> None:
+    """Implement the Update Configuration business logic here."""
+    not_implemented("Update Configuration")
+
+
+def open_update_configuration(parent: tk.Misc) -> None:
+    """Open the Update Configuration dialog."""
+    LOGGER.debug("Opening Update Configuration dialog")
+    window = tk.Toplevel(parent)
+    window.title("Update Configuration")
+    window.geometry("420x190")
+    window.transient(parent)
+
+    frame = ttk.Frame(window, padding=20)
+    frame.pack(fill="both", expand=True)
+    ttk.Label(frame, text="Update Configuration", font=("Segoe UI", 14, "bold")).pack(pady=(0, 10))
+    ttk.Label(
+        frame,
+        text="Add input controls and business logic in:\nintegration/update_configuration.py",
+        justify="center",
+    ).pack(pady=5)
+    ttk.Button(
+        frame,
+        text="Run",
+        command=lambda: run_gui_action("Update Configuration", execute_update_configuration),
+    ).pack(pady=12)

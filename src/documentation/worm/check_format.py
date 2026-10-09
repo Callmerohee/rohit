@@ -1,17 +1,38 @@
-"""Perform conservative file checks before WORM delivery."""
-import hashlib, logging
-from pathlib import Path
-from documentation import EasyToolError, require_file
-log = logging.getLogger(__name__)
-ALLOWED_SUFFIXES = {".a2l", ".cps", ".hex", ".cfa", ".json", ".zip"}
+"""Check Format GUI placeholder and extension point."""
+from __future__ import annotations
 
-def check_format(file: Path) -> dict[str, object]:
-    file = require_file(file)
-    if file.suffix.lower() not in ALLOWED_SUFFIXES: raise EasyToolError(f"Unsupported WORM file type: {file.suffix}")
-    size = file.stat().st_size
-    if size == 0: raise EasyToolError(f"Empty files cannot be delivered: {file}")
-    digest = hashlib.sha256()
-    with file.open("rb") as stream:
-        for chunk in iter(lambda: stream.read(1024 * 1024), b""): digest.update(chunk)
-    result = {"path": str(file), "size": size, "sha256": digest.hexdigest(), "valid": True}
-    log.info("Format check passed: %s", result); return result
+import logging
+import tkinter as tk
+from tkinter import ttk
+
+from app_common import not_implemented, run_gui_action
+
+LOGGER = logging.getLogger(__name__)
+
+
+def execute_check_format() -> None:
+    """Implement the Check Format business logic here."""
+    not_implemented("Check Format")
+
+
+def open_check_format(parent: tk.Misc) -> None:
+    """Open the Check Format dialog."""
+    LOGGER.debug("Opening Check Format dialog")
+    window = tk.Toplevel(parent)
+    window.title("Check Format")
+    window.geometry("420x190")
+    window.transient(parent)
+
+    frame = ttk.Frame(window, padding=20)
+    frame.pack(fill="both", expand=True)
+    ttk.Label(frame, text="Check Format", font=("Segoe UI", 14, "bold")).pack(pady=(0, 10))
+    ttk.Label(
+        frame,
+        text="Add input controls and business logic in:\ndocumentation/worm/check_format.py",
+        justify="center",
+    ).pack(pady=5)
+    ttk.Button(
+        frame,
+        text="Run",
+        command=lambda: run_gui_action("Check Format", execute_check_format),
+    ).pack(pady=12)

@@ -1,16 +1,38 @@
-"""Replace a unique label in a UTF-8 text file."""
-import logging
-from pathlib import Path
-from documentation import EasyToolError, atomic_write_text, require_file
-log = logging.getLogger(__name__)
+"""Label Update GUI placeholder and extension point."""
+from __future__ import annotations
 
-def update_label(file: Path, old: str, new: str) -> Path:
-    file = require_file(file)
-    if not old: raise ValueError("Old label must not be empty")
-    try: content = file.read_text(encoding="utf-8")
-    except (OSError, UnicodeError) as exc: raise EasyToolError(f"Cannot read {file}: {exc}") from exc
-    count = content.count(old)
-    if count == 0: raise EasyToolError(f"Label not found in {file}: {old!r}")
-    if count > 1: raise EasyToolError(f"Label is ambiguous; found {count} occurrences in {file}")
-    atomic_write_text(file, content.replace(old, new, 1))
-    log.info("Updated label in %s", file); return file
+import logging
+import tkinter as tk
+from tkinter import ttk
+
+from app_common import not_implemented, run_gui_action
+
+LOGGER = logging.getLogger(__name__)
+
+
+def execute_label_update() -> None:
+    """Implement the Label Update business logic here."""
+    not_implemented("Label Update")
+
+
+def open_label_update(parent: tk.Misc) -> None:
+    """Open the Label Update dialog."""
+    LOGGER.debug("Opening Label Update dialog")
+    window = tk.Toplevel(parent)
+    window.title("Label Update")
+    window.geometry("420x190")
+    window.transient(parent)
+
+    frame = ttk.Frame(window, padding=20)
+    frame.pack(fill="both", expand=True)
+    ttk.Label(frame, text="Label Update", font=("Segoe UI", 14, "bold")).pack(pady=(0, 10))
+    ttk.Label(
+        frame,
+        text="Add input controls and business logic in:\nintegration/label_update.py",
+        justify="center",
+    ).pack(pady=5)
+    ttk.Button(
+        frame,
+        text="Run",
+        command=lambda: run_gui_action("Label Update", execute_label_update),
+    ).pack(pady=12)

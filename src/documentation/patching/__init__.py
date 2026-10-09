@@ -1,15 +1,20 @@
-"""File patching helpers."""
+"""Patching GUI that links A2L, CPS, HEX, and CFA patch modules."""
 from __future__ import annotations
-import logging
-from pathlib import Path
-from documentation import EasyToolError, atomic_write_text, require_file
-log = logging.getLogger(__name__)
+import tkinter as tk
+from tkinter import ttk
+from documentation.patching.a2l import open_a2l
+from documentation.patching.cps import open_cps
+from documentation.patching.hex import open_hex
+from documentation.patching.cfa import open_cfa
 
-def patch_text_file(source: Path, output: Path, expected_suffix: str, marker: str) -> Path:
-    source = require_file(source, suffix=expected_suffix)
-    output = Path(output).expanduser().resolve()
-    try: content = source.read_text(encoding="utf-8")
-    except (OSError, UnicodeError) as exc: raise EasyToolError(f"Cannot read {source} as UTF-8 text: {exc}") from exc
-    if marker in content: raise EasyToolError(f"File already contains patch marker: {marker}")
-    atomic_write_text(output, content.rstrip() + f"\n{marker}\n")
-    log.info("Patched %s -> %s", source, output); return output
+
+def open_patching(parent: tk.Misc) -> None:
+    window = tk.Toplevel(parent)
+    window.title("Patching")
+    window.geometry("350x300")
+    window.transient(parent)
+    frame = ttk.Frame(window, padding=20)
+    frame.pack(fill="both", expand=True)
+    ttk.Label(frame, text="Patching", font=("Segoe UI", 14, "bold")).pack(pady=(0, 12))
+    for label, callback in (("A2L", open_a2l), ("CPS", open_cps), ("HEX", open_hex), ("CFA", open_cfa)):
+        ttk.Button(frame, text=label, command=lambda cb=callback: cb(window)).pack(fill="x", pady=5, ipady=5)

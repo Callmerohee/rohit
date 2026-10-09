@@ -1,15 +1,18 @@
-"""Create a view by copying a source tree to a new destination."""
-import logging, shutil
-from pathlib import Path
-from documentation import EasyToolError, require_directory
-log = logging.getLogger(__name__)
+"""Optional integration view creation extension point."""
+from __future__ import annotations
+import logging
+import tkinter as tk
+from app_common import not_implemented, run_gui_action
 
-def create_view(source: Path, destination: Path) -> Path:
-    source = require_directory(source); destination = Path(destination).expanduser().resolve()
-    log.info("Creating view from %s to %s", source, destination)
-    if destination.exists(): raise EasyToolError(f"Destination already exists: {destination}")
-    try: shutil.copytree(source, destination)
-    except OSError as exc:
-        shutil.rmtree(destination, ignore_errors=True)
-        raise EasyToolError(f"View creation failed: {exc}") from exc
-    log.info("View created: %s", destination); return destination
+LOGGER = logging.getLogger(__name__)
+
+
+def execute_view_creation() -> None:
+    """Implement integration view creation logic here."""
+    not_implemented("View Creation")
+
+
+def open_view_creation(parent: tk.Misc) -> None:
+    """Run the view creation placeholder from another GUI when needed."""
+    LOGGER.debug("View Creation requested")
+    run_gui_action("View Creation", execute_view_creation)

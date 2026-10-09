@@ -1,19 +1,38 @@
-"""Create a small SQLite diagnostic database from JSON records."""
-import json, logging, sqlite3
-from pathlib import Path
-from documentation import EasyToolError, ensure_directory, require_file
-log = logging.getLogger(__name__)
+"""DiagDB Creation GUI placeholder and extension point."""
+from __future__ import annotations
 
-def create_diagdb(source: Path, output: Path) -> Path:
-    source = require_file(source, suffix=".json"); output = Path(output).expanduser().resolve()
-    ensure_directory(output.parent)
-    try:
-        records = json.loads(source.read_text(encoding="utf-8"))
-        if not isinstance(records, list): raise EasyToolError("Diagnostic JSON must contain a list")
-        with sqlite3.connect(output) as db:
-            db.execute("CREATE TABLE IF NOT EXISTS diagnostics (id INTEGER PRIMARY KEY, payload TEXT NOT NULL)")
-            db.execute("DELETE FROM diagnostics")
-            db.executemany("INSERT INTO diagnostics(payload) VALUES (?)", [(json.dumps(r, sort_keys=True),) for r in records])
-    except (OSError, UnicodeError, json.JSONDecodeError, sqlite3.Error) as exc:
-        output.unlink(missing_ok=True); raise EasyToolError(f"Diagnostic DB creation failed: {exc}") from exc
-    log.info("Created diagnostic DB with %d records: %s", len(records), output); return output
+import logging
+import tkinter as tk
+from tkinter import ttk
+
+from app_common import not_implemented, run_gui_action
+
+LOGGER = logging.getLogger(__name__)
+
+
+def execute_diagdb_creation() -> None:
+    """Implement the DiagDB Creation business logic here."""
+    not_implemented("DiagDB Creation")
+
+
+def open_diagdb_creation(parent: tk.Misc) -> None:
+    """Open the DiagDB Creation dialog."""
+    LOGGER.debug("Opening DiagDB Creation dialog")
+    window = tk.Toplevel(parent)
+    window.title("DiagDB Creation")
+    window.geometry("420x190")
+    window.transient(parent)
+
+    frame = ttk.Frame(window, padding=20)
+    frame.pack(fill="both", expand=True)
+    ttk.Label(frame, text="DiagDB Creation", font=("Segoe UI", 14, "bold")).pack(pady=(0, 10))
+    ttk.Label(
+        frame,
+        text="Add input controls and business logic in:\ndocumentation/diagdb_creation.py",
+        justify="center",
+    ).pack(pady=5)
+    ttk.Button(
+        frame,
+        text="Run",
+        command=lambda: run_gui_action("DiagDB Creation", execute_diagdb_creation),
+    ).pack(pady=12)
