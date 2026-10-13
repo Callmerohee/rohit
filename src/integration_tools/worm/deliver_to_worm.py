@@ -28,7 +28,7 @@ def open_deliver_to_worm(parent: tk.Misc) -> None:
     ttk.Label(frame, text="Deliver to WORM", font=("Segoe UI", 14, "bold")).pack(pady=(0, 10))
     ttk.Label(
         frame,
-        text="Add input controls and business logic in:\ndocumentation/worm/deliver_to_worm.py",
+        text="Add input controls and business logic in:\nintegration_tools/worm/deliver_to_worm.py",
         justify="center",
     ).pack(pady=5)
     ttk.Button(

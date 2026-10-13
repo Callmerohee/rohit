@@ -6,17 +6,17 @@ import tkinter as tk
 from tkinter import ttk
 
 from app_common import configure_logging
-from integration.update_configuration import open_update_configuration
-from integration.update_project_config import open_update_project_config
-from integration.label_update import open_label_update
-from documentation.work_folder_creation import open_work_folder_creation
-from documentation.copy_to_release import open_copy_to_release
-from documentation.diagdb_creation import open_diagdb_creation
-from documentation.resource_generation import open_resource_generation
-from documentation.worm_folder_creation import open_worm_folder_creation
-from documentation.patching import open_patching
-from documentation.worm.check_format import open_check_format
-from documentation.worm.deliver_to_worm import open_deliver_to_worm
+from buildproject.update_configuration import open_update_configuration
+from buildproject.update_project_config import open_update_project_config
+from buildproject.label_update import open_label_update
+from integration_tools.work_folder_creation import open_work_folder_creation
+from integration_tools.copy_to_release import open_copy_to_release
+from integration_tools.diagdb_creation import open_diagdb_creation
+from integration_tools.resource_generation import open_resource_generation
+from integration_tools.worm_folder_creation import open_worm_folder_creation
+from integration_tools.patching import open_patching
+from integration_tools.worm.check_format import open_check_format
+from integration_tools.worm.deliver_to_worm import open_deliver_to_worm
 
 LOGGER = logging.getLogger(__name__)
 
@@ -41,8 +41,8 @@ class EasyToolApp(tk.Tk):
     def __init__(self) -> None:
         super().__init__()
         self.title("EasyTool")
-        self.geometry("520x570")
-        self.minsize(460, 500)
+        self.geometry("920x390")
+        self.minsize(820, 390)
         self.protocol("WM_DELETE_WINDOW", self._close)
         self._build_ui()
         LOGGER.info("EasyTool GUI initialized")
@@ -50,8 +50,8 @@ class EasyToolApp(tk.Tk):
     def _build_ui(self) -> None:
         frame = ttk.Frame(self, padding=20)
         frame.pack(fill="both", expand=True)
-        ttk.Label(frame, text="EasyTool", font=("Segoe UI", 20, "bold")).pack(pady=(0, 5))
-        ttk.Label(frame, text="Select an operation").pack(pady=(0, 15))
+        #ttk.Label(frame, text="EasyTool", font=("Segoe UI", 20, "bold")).pack(pady=(0, 5))
+        #ttk.Label(frame, text="Select an operation").pack(pady=(0, 15))
 
         button_frame = ttk.Frame(frame)
         button_frame.pack(fill="both", expand=True)

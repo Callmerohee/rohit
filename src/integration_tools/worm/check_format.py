@@ -28,7 +28,7 @@ def open_check_format(parent: tk.Misc) -> None:
     ttk.Label(frame, text="Check Format", font=("Segoe UI", 14, "bold")).pack(pady=(0, 10))
     ttk.Label(
         frame,
-        text="Add input controls and business logic in:\ndocumentation/worm/check_format.py",
+        text="Add input controls and business logic in:\nintegration_tools/worm/check_format.py",
         justify="center",
     ).pack(pady=5)
     ttk.Button(

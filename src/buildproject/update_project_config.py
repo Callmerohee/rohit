@@ -28,7 +28,7 @@ def open_update_project_config(parent: tk.Misc) -> None:
     ttk.Label(frame, text="Update Project Config", font=("Segoe UI", 14, "bold")).pack(pady=(0, 10))
     ttk.Label(
         frame,
-        text="Add input controls and business logic in:\nintegration/update_project_config.py",
+        text="Add input controls and business logic in:\nbuildproject/update_project_config.py",
         justify="center",
     ).pack(pady=5)
     ttk.Button(

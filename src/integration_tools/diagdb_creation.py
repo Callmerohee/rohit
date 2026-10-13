@@ -28,7 +28,7 @@ def open_diagdb_creation(parent: tk.Misc) -> None:
     ttk.Label(frame, text="DiagDB Creation", font=("Segoe UI", 14, "bold")).pack(pady=(0, 10))
     ttk.Label(
         frame,
-        text="Add input controls and business logic in:\ndocumentation/diagdb_creation.py",
+        text="Add input controls and business logic in:\nintegration_tools/diagdb_creation.py",
         justify="center",
     ).pack(pady=5)
     ttk.Button(

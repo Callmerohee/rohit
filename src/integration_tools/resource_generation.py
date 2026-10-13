@@ -28,7 +28,7 @@ def open_resource_generation(parent: tk.Misc) -> None:
     ttk.Label(frame, text="Resource Generation", font=("Segoe UI", 14, "bold")).pack(pady=(0, 10))
     ttk.Label(
         frame,
-        text="Add input controls and business logic in:\ndocumentation/resource_generation.py",
+        text="Add input controls and business logic in:\nintegration_tools/resource_generation.py",
         justify="center",
     ).pack(pady=5)
     ttk.Button(

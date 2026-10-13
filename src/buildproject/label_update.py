@@ -28,7 +28,7 @@ def open_label_update(parent: tk.Misc) -> None:
     ttk.Label(frame, text="Label Update", font=("Segoe UI", 14, "bold")).pack(pady=(0, 10))
     ttk.Label(
         frame,
-        text="Add input controls and business logic in:\nintegration/label_update.py",
+        text="Add input controls and business logic in:\nbuildproject/label_update.py",
         justify="center",
     ).pack(pady=5)
     ttk.Button(

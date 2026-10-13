@@ -1,4 +1,4 @@
-"""Optional integration view creation extension point."""
+"""Optional buildproject view creation extension point."""
 from __future__ import annotations
 import logging
 import tkinter as tk
@@ -8,7 +8,7 @@ LOGGER = logging.getLogger(__name__)
 
 
 def execute_view_creation() -> None:
-    """Implement integration view creation logic here."""
+    """Implement buildproject view creation logic here."""
     not_implemented("View Creation")
 
 

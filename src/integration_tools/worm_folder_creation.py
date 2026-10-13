@@ -28,7 +28,7 @@ def open_worm_folder_creation(parent: tk.Misc) -> None:
     ttk.Label(frame, text="WORM Folder Creation", font=("Segoe UI", 14, "bold")).pack(pady=(0, 10))
     ttk.Label(
         frame,
-        text="Add input controls and business logic in:\ndocumentation/worm_folder_creation.py",
+        text="Add input controls and business logic in:\nintegration_tools/worm_folder_creation.py",
         justify="center",
     ).pack(pady=5)
     ttk.Button(

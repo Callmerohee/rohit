@@ -28,7 +28,7 @@ def open_work_folder_creation(parent: tk.Misc) -> None:
     ttk.Label(frame, text="Work Folder Creation", font=("Segoe UI", 14, "bold")).pack(pady=(0, 10))
     ttk.Label(
         frame,
-        text="Add input controls and business logic in:\ndocumentation/work_folder_creation.py",
+        text="Add input controls and business logic in:\nintegration_tools/work_folder_creation.py",
         justify="center",
     ).pack(pady=5)
     ttk.Button(

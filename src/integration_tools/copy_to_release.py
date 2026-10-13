@@ -28,7 +28,7 @@ def open_copy_to_release(parent: tk.Misc) -> None:
     ttk.Label(frame, text="Copy to Release", font=("Segoe UI", 14, "bold")).pack(pady=(0, 10))
     ttk.Label(
         frame,
-        text="Add input controls and business logic in:\ndocumentation/copy_to_release.py",
+        text="Add input controls and business logic in:\nintegration_tools/copy_to_release.py",
         justify="center",
     ).pack(pady=5)
     ttk.Button(

@@ -2,10 +2,10 @@
 from __future__ import annotations
 import tkinter as tk
 from tkinter import ttk
-from documentation.patching.a2l import open_a2l
-from documentation.patching.cps import open_cps
-from documentation.patching.hex import open_hex
-from documentation.patching.cfa import open_cfa
+from integration_tools.patching.a2l import open_a2l
+from integration_tools.patching.cps import open_cps
+from integration_tools.patching.hex import open_hex
+from integration_tools.patching.cfa import open_cfa
 
 
 def open_patching(parent: tk.Misc) -> None:
