@@ -6,33 +6,23 @@ import tkinter as tk
 from tkinter import ttk
 
 from app_common import configure_logging
-from buildproject.update_configuration import open_update_configuration
-from buildproject.update_project_config import open_update_project_config
+from buildproject.load_releaseinfo import load_release_info
+from buildproject.build_project import build_project
+from buildproject.beyond_compare import beyond_compare
+from buildproject.view_creation import open_view_creation
+from buildproject.update_configuration import edit_configspec
+from buildproject.update_project_config import update_project_config
 from buildproject.label_update import open_label_update
-from integration_tools.work_folder_creation import open_work_folder_creation
+from integration_tools.ADOKU import open_ADOKU_creation
 from integration_tools.copy_to_release import open_copy_to_release
 from integration_tools.diagdb_creation import open_diagdb_creation
 from integration_tools.resource_generation import open_resource_generation
-from integration_tools.worm_folder_creation import open_worm_folder_creation
 from integration_tools.patching import open_patching
+from integration_tools.worm.worm_folder_creation import open_worm_folder_creation
 from integration_tools.worm.check_format import open_check_format
 from integration_tools.worm.deliver_to_worm import open_deliver_to_worm
 
 LOGGER = logging.getLogger(__name__)
-
-BUTTONS = (
-    ("Update Configuration", open_update_configuration),
-    ("Update Project Config", open_update_project_config),
-    ("Label Update", open_label_update),
-    ("Work Folder Creation", open_work_folder_creation),
-    ("Copy to Release", open_copy_to_release),
-    ("DiagDB Creation", open_diagdb_creation),
-    ("Resource Generation", open_resource_generation),
-    ("WORM Folder Creation", open_worm_folder_creation),
-    ("Patching", open_patching),
-    ("Check Format", open_check_format),
-    ("Deliver to WORM", open_deliver_to_worm),
-)
 
 
 class EasyToolApp(tk.Tk):
@@ -44,27 +34,696 @@ class EasyToolApp(tk.Tk):
         self.geometry("920x390")
         self.minsize(820, 390)
         self.protocol("WM_DELETE_WINDOW", self._close)
+        # -----------------------------------------------------
+        # APPLICATION VARIABLES
+        # -----------------------------------------------------
+        self.label_source = tk.StringVar(value="CQ")
+        self.compare_file = tk.StringVar(value="Configspec")
+
+        self.view_name = tk.StringVar(value="-")
+        self.drive_letter = tk.StringVar(value="V:")
+        self.chk_patching = tk.BooleanVar()
+        self.chk_diagdb = tk.BooleanVar()
+        self.chk_resource = tk.BooleanVar()
+        self.chk_copy_release = tk.BooleanVar()
+
+        self.cpu_load = tk.StringVar()
+
+
+
+        self.progress_value = tk.DoubleVar(value=0)
+        self.progress_text = tk.StringVar(value="0%")
+
+        self.status_text = tk.StringVar(value="READY")
+
+        self.configure(bg="#d3d6da")
+
+        self._configure_style()
         self._build_ui()
+
         LOGGER.info("EasyTool GUI initialized")
 
-    def _build_ui(self) -> None:
-        frame = ttk.Frame(self, padding=20)
-        frame.pack(fill="both", expand=True)
-        #ttk.Label(frame, text="EasyTool", font=("Segoe UI", 20, "bold")).pack(pady=(0, 5))
-        #ttk.Label(frame, text="Select an operation").pack(pady=(0, 15))
 
-        button_frame = ttk.Frame(frame)
-        button_frame.pack(fill="both", expand=True)
-        for index, (label, callback) in enumerate(BUTTONS):
-            row, column = divmod(index, 2)
-            button = ttk.Button(button_frame, text=label, command=lambda cb=callback: cb(self))
-            button.grid(row=row, column=column, sticky="nsew", padx=6, pady=6, ipady=9)
+    # =========================================================
+    # STYLE
+    # =========================================================
+    def _configure_style(self):
+        style = ttk.Style(self)
+
+        available_themes = style.theme_names()
+
+        if "vista" in available_themes:
+            style.theme_use("default")
+        elif "clam" in available_themes:
+            style.theme_use("clam")
+
+        default_font = ("Segoe UI", 9)
+        heading_font = ("Segoe UI", 9, "bold")
+
+        style.configure(
+            ".",
+            font=default_font
+        )
+
+        style.configure(
+            "Main.TFrame",
+            background="#d3d6da"
+        )
+
+        style.configure(
+            "Panel.TLabelframe",
+            background="#d3d6da",
+            borderwidth=1,
+            relief="groove",
+            padding=7
+        )
+
+        style.configure(
+            "Panel.TLabelframe.Label",
+            background="#d3d6da",
+            foreground="#111111",
+            font=heading_font
+        )
+
+        style.configure(
+            "Section.TLabel",
+            background="#d3d6da",
+            foreground="#111111",
+            font=heading_font
+        )
+
+        style.configure(
+            "Field.TLabel",
+            background="#d3d6da",
+            foreground="#111111"
+        )
+
+        style.configure(
+            "Tool.TButton",
+            font=default_font,
+            padding=(10, 5)
+        )
+
+        style.configure(
+            "Tool.TCheckbutton",
+            background="#d3d6da"
+        )
+
+        style.configure(
+            "Tool.TRadiobutton",
+            background="#d3d6da"
+        )
+
+        style.configure(
+            "Tool.Horizontal.TProgressbar",
+            thickness=17
+        )
+
+        style.map(
+            "Tool.TButton",
+            relief=[
+                ("pressed", "sunken"),
+                ("active", "raised")
+            ]
+        )
+
+    # =========================================================
+    # MAIN LAYOUT
+    # =========================================================
+    def _build_ui(self):
+        main = ttk.Frame(
+            self,
+            style="Main.TFrame",
+            padding=7
+        )
+        main.pack(fill="both", expand=True)
+
+        main.columnconfigure(0, weight=1, uniform="main")
+        main.columnconfigure(1, weight=1, uniform="main")
+
+        main.rowconfigure(0, weight=0)
+        main.rowconfigure(1, weight=0)
+        main.rowconfigure(2, weight=0)
+
+        left_panel = ttk.Frame(
+            main,
+            style="Main.TFrame"
+        )
+        left_panel.grid(
+            row=0,
+            column=0,
+            rowspan=2,
+            sticky="nsew",
+            padx=(0, 4)
+        )
+
+        right_panel = ttk.Frame(
+            main,
+            style="Main.TFrame"
+        )
+        right_panel.grid(
+            row=0,
+            column=1,
+            rowspan=2,
+            sticky="nsew",
+            padx=(4, 0)
+        )
+
+        left_panel.columnconfigure(0, weight=1)
+        right_panel.columnconfigure(0, weight=1)
+
+        self._build_project_panel(left_panel)
+
+        self._build_view_panel(left_panel)
+
+        self._build_integration_panel(right_panel)
+        self._build_cpu_panel(right_panel)
+
+        self._build_log_panel(main)
+        self._build_bottom_status_bar()
+
+    # =========================================================
+    # BUILD PROJECT PANEL
+    # =========================================================
+    def _build_project_panel(self, parent):
+        frame = ttk.LabelFrame(
+            parent,
+            text="Build Project",
+            style="Panel.TLabelframe"
+        )
+        frame.grid(
+            row=0,
+            column=0,
+            sticky="ew",
+            pady=(0, 7)
+        )
+
+        for column in range(3):
+            frame.columnconfigure(
+                column,
+                weight=1,
+                uniform="build-buttons"
+            )
+        self.PAD_X = 3
+        self.PAD_Y = 3
+        ttk.Button(
+            frame,
+            text="Load Release Info",
+            style="Tool.TButton",
+            command=lambda: load_release_info(self)
+        ).grid(
+            row=0,
+            column=0,
+            sticky="ew",
+            padx=self.PAD_X,
+            pady=self.PAD_Y
+        )
+
+        ttk.Button(
+            frame,
+            text="Create View",
+            style="Tool.TButton",
+            command=lambda: open_view_creation(self)
+        ).grid(
+            row=0,
+            column=1,
+            sticky="ew",
+            padx=self.PAD_X,
+            pady=self.PAD_Y
+        )
+        ttk.Button(
+            frame,
+            text="Edit Configspec",
+            style="Tool.TButton",
+            command=lambda: edit_configspec(self)
+        ).grid(
+            row=0,
+            column=2,
+            sticky="ew",
+            padx=self.PAD_X,
+            pady=self.PAD_Y
+        )
+        ttk.Button(
+            frame,
+            text="Projectconfig.mak",
+            style="Tool.TButton",
+            command=lambda: update_project_config(self)
+        ).grid(
+            row=1,
+            column=0,
+            sticky="ew",
+            padx=self.PAD_X,
+            pady=self.PAD_Y
+        )
+
+        ttk.Button(
+            frame,
+            text="Load Labels",
+            style="Tool.TButton",
+            command=lambda: open_label_update(self)
+        ).grid(
+            row=1,
+            column=1,
+            sticky="ew",
+            padx=self.PAD_X,
+            pady=self.PAD_Y
+        )
+
+        ttk.Combobox(
+            frame,
+            textvariable=self.label_source,
+            values=["CQ", "Manual"],
+            state="readonly",
+            width=12
+        ).grid(
+            row=1,
+            column=2,
+            sticky="ew",
+            padx=self.PAD_X,
+            pady=self.PAD_Y
+        )
+
+        ttk.Button(
+            frame,
+            text="Build Project",
+            style="Tool.TButton",
+            command=lambda: build_project(self)
+        ).grid(
+            row=2,
+            column=0,
+            sticky="ew",
+            padx=self.PAD_X,
+            pady=self.PAD_Y
+        )
+
+        ttk.Button(
+            frame,
+            text="Beyond Compare",
+            style="Tool.TButton",
+            command=lambda: beyond_compare(self)
+        ).grid(
+            row=2,
+            column=1,
+            sticky="ew",
+            padx=self.PAD_X,
+            pady=self.PAD_Y
+        )
+
+        ttk.Combobox(
+            frame,
+            textvariable=self.compare_file,
+            values=["Configspec", "Projectconfig.mak"],
+            state="readonly",
+            width=18
+        ).grid(
+            row=2,
+            column=2,
+            sticky="ew",
+            padx=(2, 3)
+        )
+
+
+
+
+
+    # =========================================================
+    # VIEW PANEL
+    # =========================================================
+    def _build_view_panel(self, parent):
+        frame = ttk.LabelFrame(
+            parent,
+            text="View Information",
+            style="Panel.TLabelframe"
+        )
+        frame.grid(
+            row=2,
+            column=0,
+            sticky="nsew"
+        )
+
+        frame.columnconfigure(1, weight=1)
+
+        ttk.Label(
+            frame,
+            text="View:",
+            style="Field.TLabel"
+        ).grid(
+            row=0,
+            column=0,
+            sticky="w",
+            padx=(0, 5)
+        )
+
+        view_entry = ttk.Entry(
+            frame,
+            textvariable=self.view_name,
+            state="readonly",
+            font=("Segoe UI", 9)
+        )
+        view_entry.grid(
+            row=0,
+            column=1,
+            sticky="ew",
+            padx=(0, 5)
+        )
+
+        self.drive_combo = ttk.Combobox(
+            frame,
+            textvariable=self.drive_letter,
+            values=["V:", "W:", "X:", "Y:", "Z:"],
+            width=4,
+            state="readonly"
+        )
+        self.drive_combo.grid(
+            row=0,
+            column=2,
+            sticky="e"
+        )
+
+        progress_row = ttk.Frame(frame)
+        progress_row.grid(
+            row=1,
+            column=0,
+            columnspan=3,
+            sticky="ew",
+            pady=(10, 0)
+        )
+
+        progress_row.columnconfigure(0, weight=1)
+
+        self.progress = ttk.Progressbar(
+            progress_row,
+            maximum=100,
+            variable=self.progress_value,
+            style="Tool.Horizontal.TProgressbar"
+        )
+        self.progress.grid(
+            row=0,
+            column=0,
+            sticky="ew"
+        )
+
+        ttk.Label(
+            progress_row,
+            textvariable=self.progress_text,
+            width=5
+        ).grid(
+            row=0,
+            column=1,
+            padx=(5, 0)
+        )
+
+    # =========================================================
+    # INTEGRATION PANEL
+    # =========================================================
+    def _build_integration_panel(self, parent):
+        frame = ttk.LabelFrame(
+            parent,
+            text="Integration Tools",
+            style="Panel.TLabelframe"
+        )
+        frame.grid(
+            row=0,
+            column=0,
+            sticky="ew",
+            pady=(0, 7)
+        )
+
         for column in range(2):
-            button_frame.columnconfigure(column, weight=1)
-        for row in range(6):
-            button_frame.rowconfigure(row, weight=1)
+            frame.columnconfigure(
+                column,
+                weight=1,
+                uniform="buildproject-buttons"
+            )
 
-        ttk.Label(frame, text="Detailed events are stored in log/Log.txt").pack(pady=(12, 0))
+        buttons = [
+            ("ADOKU", lambda: open_ADOKU_creation(self)),
+            ("Patching", lambda: open_patching(self)),
+            ("DiagDB", lambda: open_diagdb_creation(self)),
+            ("Resource Generation", lambda: open_resource_generation(self)),
+            ("Copy To Release", lambda: open_copy_to_release(self)),
+            ("WORM", lambda: open_worm_folder_creation(self)),
+            ("Check WORM", lambda: open_check_format(self)),
+            ("Deliver WORM", lambda: open_deliver_to_worm(self))
+        ]
+
+        for index, (text, command) in enumerate(buttons):
+            row = index // 3
+            column = index % 3
+
+            left_padding = 0 if column == 0 else 4
+            right_padding = 4 if column == 0 else 0
+
+            ttk.Button(
+                frame,
+                text=text,
+                style="Tool.TButton",
+                command=command
+            ).grid(
+                row=row,
+                column=column,
+                sticky="ew",
+                padx=self.PAD_X,
+                pady=self.PAD_Y
+            )
+        # --------------------------------------------------
+        # OPTION CHECKBOXES
+        # --------------------------------------------------
+
+        check_frame = ttk.Frame(
+            frame,
+            style="Main.TFrame"
+        )
+
+        check_frame.grid(
+            row=3,
+            column=0,
+            columnspan=3,
+            sticky="w",
+            pady=(12, 8)
+        )
+
+        ttk.Checkbutton(
+            check_frame,
+            text="Patching",
+            variable=self.chk_patching
+        ).grid(
+            row=0,
+            column=0,
+            sticky="w",
+            padx=(0, 20)
+        )
+
+        ttk.Checkbutton(
+            check_frame,
+            text="DiagDB",
+            variable=self.chk_diagdb
+        ).grid(
+            row=0,
+            column=1,
+            sticky="w",
+            padx=(0, 20)
+        )
+
+
+        ttk.Checkbutton(
+            check_frame,
+            text="Resource Generation",
+            variable=self.chk_resource
+        ).grid(
+            row=0,
+            column=2,
+            sticky="w",
+            padx=(0, 20)
+        )
+
+        ttk.Checkbutton(
+            check_frame,
+            text="Copy To Release",
+            variable=self.chk_copy_release
+        ).grid(
+            row=0,
+            column=3,
+            sticky="w",
+            padx=(0, 20)
+        )
+    # =========================================================
+    # CPU PANEL
+    # =========================================================
+    def _build_cpu_panel(self, parent):
+        frame = ttk.LabelFrame(
+            parent,
+            text="CPU Load",
+            style="Panel.TLabelframe"
+        )
+        frame.grid(
+            row=1,
+            column=0,
+            sticky="nsew"
+        )
+
+        frame.columnconfigure(1, weight=1)
+
+        ttk.Label(
+            frame,
+            text="CPU Load:",
+            style="Field.TLabel"
+        ).grid(
+            row=0,
+            column=0,
+            sticky="e",
+            padx=(0, 8),
+            pady=(0, 7)
+        )
+
+        cpu_entry = ttk.Entry(
+            frame,
+            textvariable=self.cpu_load
+        )
+        cpu_entry.grid(
+            row=0,
+            column=1,
+            sticky="ew",
+            pady=(0, 7)
+        )
+
+
+
+
+    # =========================================================
+    # LOG PANEL
+    # =========================================================
+    def _build_log_panel(self, parent):
+        frame = ttk.LabelFrame(
+            parent,
+            text="Logs",
+            style="Panel.TLabelframe"
+        )
+        frame.grid(
+            row=2,
+            column=0,
+            columnspan=2,
+            sticky="nsew",
+            pady=(8, 0)
+        )
+
+        frame.columnconfigure(0, weight=1)
+        frame.rowconfigure(0, weight=1)
+
+        self.log_text = tk.Text(
+            frame,
+            height=4,
+            wrap="word",
+            font=("Consolas", 9),
+            bg="#ffffff",
+            fg="#111111",
+            relief="sunken",
+            borderwidth=1,
+            padx=6,
+            pady=5
+        )
+        self.log_text.grid(
+            row=0,
+            column=0,
+            sticky="ew"
+        )
+
+        scrollbar = ttk.Scrollbar(
+            frame,
+            orient="vertical",
+            command=self.log_text.yview
+        )
+        scrollbar.grid(
+            row=0,
+            column=1,
+            sticky="ns",
+            padx=(5, 0)
+        )
+
+        self.log_text.configure(
+            yscrollcommand=scrollbar.set,
+            state="disabled"
+        )
+
+        self.write_log("Application Ready")
+
+    # =========================================================
+    # BOTTOM STATUS BAR
+    # =========================================================
+    def _build_bottom_status_bar(self):
+        status_bar = tk.Frame(
+            self,
+            bg="#c4c7cb",
+            relief="sunken",
+            borderwidth=1
+        )
+        status_bar.pack(
+            side="bottom",
+            fill="x"
+        )
+
+        tk.Label(
+            status_bar,
+            text="EasyTool",
+            bg="#c4c7cb",
+            fg="#222222",
+            anchor="w",
+            padx=7,
+            pady=2
+        ).pack(
+            side="left",
+            fill="x",
+            expand=True
+        )
+
+        tk.Label(
+            status_bar,
+            textvariable=self.status_text,
+            bg="#c4c7cb",
+            fg="#222222",
+            anchor="e",
+            padx=7,
+            pady=2
+        ).pack(side="right")
+
+    # =========================================================
+    # HELPERS
+    # =========================================================
+    def write_log(self, message):
+        self.log_text.configure(state="normal")
+        self.log_text.insert("end", f"{message}\n")
+        self.log_text.see("end")
+        self.log_text.configure(state="disabled")
+
+    def set_progress(self, value):
+        value = max(0, min(100, value))
+
+        self.progress_value.set(value)
+        self.progress_text.set(f"{int(value)}%")
+
+    def set_status(self, text, color=None):
+        self.status_text.set(text)
+
+        if hasattr(self, "status_indicator"):
+            try:
+                self.status_indicator.configure(bg=color)
+            except:
+                pass
+
+        self.update_idletasks()
+
+    def action(self, name, progress=None):
+
+        if progress is not None:
+            self.set_progress(progress)
+
+        self.write_log("=" * 60)
+        self.write_log(f"Action : {name}")
+        self.write_log("Status : SUCCESS")
+        self.write_log("=" * 60)
+
+        self.status_text.set("READY")
+
 
     def _close(self) -> None:
         LOGGER.info("EasyTool GUI closed")

@@ -15,7 +15,7 @@ def execute_update_project_config() -> None:
     not_implemented("Update Project Config")
 
 
-def open_update_project_config(parent: tk.Misc) -> None:
+def update_project_config(parent: tk.Misc) -> None:
     """Open the Update Project Config dialog."""
     LOGGER.debug("Opening Update Project Config dialog")
     window = tk.Toplevel(parent)

@@ -15,7 +15,7 @@ def execute_update_configuration() -> None:
     not_implemented("Update Configuration")
 
 
-def open_update_configuration(parent: tk.Misc) -> None:
+def edit_configspec(parent: tk.Misc) -> None:
     """Open the Update Configuration dialog."""
     LOGGER.debug("Opening Update Configuration dialog")
     window = tk.Toplevel(parent)
