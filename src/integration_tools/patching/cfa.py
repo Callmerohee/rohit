@@ -12,14 +12,8 @@ def execute_cfa_patching() -> None:
     not_implemented("CFA Patching")
 
 
-def open_cfa(parent: tk.Misc) -> None:
+def open_cfa(self, parent: tk.Misc) -> None:
     LOGGER.debug("Opening CFA patching dialog")
-    window = tk.Toplevel(parent)
-    window.title("CFA Patching")
-    window.geometry("390x180")
-    window.transient(parent)
-    frame = ttk.Frame(window, padding=20)
-    frame.pack(fill="both", expand=True)
-    ttk.Label(frame, text="CFA Patching", font=("Segoe UI", 14, "bold")).pack(pady=8)
-    ttk.Label(frame, text="Add inputs and patching logic in this module.").pack(pady=5)
-    ttk.Button(frame, text="Run", command=lambda: run_gui_action("CFA Patching", execute_cfa_patching)).pack(pady=12)
+    self.set_status("Running: CFA Patching")
+    execute_cfa_patching()
+    self.set_status("READY")

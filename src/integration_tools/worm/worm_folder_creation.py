@@ -15,24 +15,9 @@ def execute_worm_folder_creation() -> None:
     not_implemented("WORM Folder Creation")
 
 
-def open_worm_folder_creation(parent: tk.Misc) -> None:
+def open_worm_folder_creation(self, parent: tk.Misc) -> None:
     """Open the WORM Folder Creation dialog."""
     LOGGER.debug("Opening WORM Folder Creation dialog")
-    window = tk.Toplevel(parent)
-    window.title("WORM Folder Creation")
-    window.geometry("420x190")
-    window.transient(parent)
-
-    frame = ttk.Frame(window, padding=20)
-    frame.pack(fill="both", expand=True)
-    ttk.Label(frame, text="WORM Folder Creation", font=("Segoe UI", 14, "bold")).pack(pady=(0, 10))
-    ttk.Label(
-        frame,
-        text="Add input controls and business logic in:\nintegration_tools/worm_folder_creation.py",
-        justify="center",
-    ).pack(pady=5)
-    ttk.Button(
-        frame,
-        text="Run",
-        command=lambda: run_gui_action("WORM Folder Creation", execute_worm_folder_creation),
-    ).pack(pady=12)
+    self.set_status("Running: WORM Folder Creation")
+    execute_worm_folder_creation()
+    self.set_status("READY")

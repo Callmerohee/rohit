@@ -1,2 +1,40 @@
-2026-10-13 16:54:15,713 | INFO     | __main__ | __init__:64 | EasyTool GUI initialized
-2026-10-13 16:54:20,152 | DEBUG    | buildproject.label_update | open_label_update:20 | Opening Label Update dialog
+2026-10-14 15:25:27,817 | INFO     | __main__ | __init__:64 | EasyTool GUI initialized
+2026-10-14 15:25:28,792 | DEBUG    | buildproject.load_releaseinfo | load_release_info:15 | Load release info requested
+2026-10-14 15:25:28,792 | INFO     | app_common | not_implemented:69 | Placeholder opened: Load release info
+2026-10-14 15:25:31,672 | DEBUG    | buildproject.view_creation | open_view_creation:19 | View Creation requested
+2026-10-14 15:25:31,673 | INFO     | app_common | not_implemented:69 | Placeholder opened: View Creation
+2026-10-14 15:25:33,910 | DEBUG    | buildproject.update_configuration | edit_configspec:20 | Opening Update Configuration dialog
+2026-10-14 15:25:33,914 | INFO     | app_common | not_implemented:69 | Placeholder opened: Update Configuration
+2026-10-14 15:25:35,837 | DEBUG    | buildproject.update_project_config | update_project_config:20 | Opening Update Project Config dialog
+2026-10-14 15:25:35,843 | INFO     | app_common | not_implemented:69 | Placeholder opened: Update Project Config
+2026-10-14 15:25:38,357 | DEBUG    | buildproject.label_update | open_label_update:21 | Opening Label Update(CQ) dialog
+2026-10-14 15:25:38,360 | INFO     | app_common | not_implemented:69 | Placeholder opened: Label Update
+2026-10-14 15:25:43,461 | DEBUG    | buildproject.build_project | build_project:16 | Build project requested
+2026-10-14 15:25:43,461 | INFO     | app_common | not_implemented:69 | Placeholder opened: Build Project
+2026-10-14 15:25:47,732 | DEBUG    | buildproject.beyond_compare | beyond_compare:19 | Beyond Compare requested (Configspec)
+2026-10-14 15:25:47,732 | INFO     | app_common | not_implemented:69 | Placeholder opened: Beyond Compare
+2026-10-14 15:25:52,600 | DEBUG    | integration_tools.ADOKU | create_ADOKU:30 | Opening ADOKU Creation dialog
+2026-10-14 15:25:52,606 | DEBUG    | integration_tools.ADOKU | execute_ADOKU_workflow:15 | ADOKU workflow execution started with selected options.
+2026-10-14 15:25:57,206 | DEBUG    | integration_tools.ADOKU | create_ADOKU:30 | Opening ADOKU Creation dialog
+2026-10-14 15:25:57,211 | DEBUG    | integration_tools.ADOKU | execute_ADOKU_workflow:15 | ADOKU workflow execution started with selected options.
+2026-10-14 15:26:04,959 | DEBUG    | integration_tools.patching.a2l | open_a2l:16 | Opening A2L patching dialog
+2026-10-14 15:26:04,963 | INFO     | app_common | not_implemented:69 | Placeholder opened: A2L Patching
+2026-10-14 15:26:07,070 | DEBUG    | integration_tools.patching.cps | open_cps:16 | Opening CPS patching dialog
+2026-10-14 15:26:07,072 | INFO     | app_common | not_implemented:69 | Placeholder opened: CPS Patching
+2026-10-14 15:26:07,604 | DEBUG    | integration_tools.patching.hex | open_hex:16 | Opening HEX patching dialog
+2026-10-14 15:26:07,607 | INFO     | app_common | not_implemented:69 | Placeholder opened: HEX Patching
+2026-10-14 15:26:08,172 | DEBUG    | integration_tools.patching.cfa | open_cfa:16 | Opening CFA patching dialog
+2026-10-14 15:26:08,174 | INFO     | app_common | not_implemented:69 | Placeholder opened: CFA Patching
+2026-10-14 15:26:10,975 | DEBUG    | integration_tools.diagdb_creation | open_diagdb_creation:20 | Opening DiagDB Creation dialog
+2026-10-14 15:26:10,980 | INFO     | app_common | not_implemented:69 | Placeholder opened: DiagDB Creation
+2026-10-14 15:26:13,757 | DEBUG    | integration_tools.resource_generation | open_resource_generation:20 | Opening Resource Generation dialog
+2026-10-14 15:26:13,760 | INFO     | app_common | not_implemented:69 | Placeholder opened: Resource Generation
+2026-10-14 15:26:15,957 | DEBUG    | integration_tools.copy_to_release | open_copy_to_release:20 | Opening Copy to Release dialog
+2026-10-14 15:26:15,963 | INFO     | app_common | not_implemented:69 | Placeholder opened: Copy to Release
+2026-10-14 15:26:18,302 | DEBUG    | integration_tools.worm.worm_folder_creation | open_worm_folder_creation:20 | Opening WORM Folder Creation dialog
+2026-10-14 15:26:18,305 | INFO     | app_common | not_implemented:69 | Placeholder opened: WORM Folder Creation
+2026-10-14 15:26:20,899 | DEBUG    | integration_tools.worm.check_format | open_check_format:20 | Opening Check Format dialog
+2026-10-14 15:26:20,904 | INFO     | app_common | not_implemented:69 | Placeholder opened: Check Format
+2026-10-14 15:26:23,320 | DEBUG    | integration_tools.worm.deliver_to_worm | open_deliver_to_worm:20 | Opening Deliver to WORM dialog
+2026-10-14 15:26:23,328 | INFO     | app_common | not_implemented:69 | Placeholder opened: Deliver to WORM
+2026-10-14 15:26:26,613 | INFO     | __main__ | _close:652 | EasyTool GUI closed

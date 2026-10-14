@@ -10,7 +10,8 @@ from integration_tools.patching.hex import open_hex
 from integration_tools.patching.cfa import open_cfa
 
 
-def open_patching(parent: tk.Misc) -> None:
+def open_patching(self, parent: tk.Misc) -> None:
+    mode = self.compare_file.get()
     window = tk.Toplevel(parent)
     window.title("Patching")
     window.geometry("280x250")
@@ -56,16 +57,16 @@ def open_patching(parent: tk.Misc) -> None:
 
     def run_patch():
         if a2l_var.get():
-            open_a2l(window)
+            open_a2l(self,window)
 
         if cps_var.get():
-            open_cps(window)
+            open_cps(self,window)
 
         if hex_var.get():
-            open_hex(window)
+            open_hex(self,window)
 
         if cfa_var.get():
-            open_cfa(window)
+            open_cfa(self,window)
 
     ttk.Button(
         frame,

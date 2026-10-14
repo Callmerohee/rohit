@@ -15,24 +15,9 @@ def execute_deliver_to_worm() -> None:
     not_implemented("Deliver to WORM")
 
 
-def open_deliver_to_worm(parent: tk.Misc) -> None:
+def open_deliver_to_worm(self, parent: tk.Misc) -> None:
     """Open the Deliver to WORM dialog."""
     LOGGER.debug("Opening Deliver to WORM dialog")
-    window = tk.Toplevel(parent)
-    window.title("Deliver to WORM")
-    window.geometry("420x190")
-    window.transient(parent)
-
-    frame = ttk.Frame(window, padding=20)
-    frame.pack(fill="both", expand=True)
-    ttk.Label(frame, text="Deliver to WORM", font=("Segoe UI", 14, "bold")).pack(pady=(0, 10))
-    ttk.Label(
-        frame,
-        text="Add input controls and business logic in:\nintegration_tools/worm/deliver_to_worm.py",
-        justify="center",
-    ).pack(pady=5)
-    ttk.Button(
-        frame,
-        text="Run",
-        command=lambda: run_gui_action("Deliver to WORM", execute_deliver_to_worm),
-    ).pack(pady=12)
+    self.set_status("Running: Deliver to WORM")
+    execute_deliver_to_worm()
+    self.set_status("READY")

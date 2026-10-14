@@ -31,8 +31,8 @@ class EasyToolApp(tk.Tk):
     def __init__(self) -> None:
         super().__init__()
         self.title("EasyTool")
-        self.geometry("920x390")
-        self.minsize(820, 390)
+        self.geometry("920x290")
+        self.minsize(820, 290)
         self.protocol("WM_DELETE_WINDOW", self._close)
         # -----------------------------------------------------
         # APPLICATION VARIABLES
@@ -198,8 +198,6 @@ class EasyToolApp(tk.Tk):
 
         self._build_integration_panel(right_panel)
         self._build_cpu_panel(right_panel)
-
-        self._build_log_panel(main)
         self._build_bottom_status_bar()
 
     # =========================================================
@@ -230,7 +228,7 @@ class EasyToolApp(tk.Tk):
             frame,
             text="Load Release Info",
             style="Tool.TButton",
-            command=lambda: load_release_info(self)
+            command=lambda: load_release_info(self,parent)
         ).grid(
             row=0,
             column=0,
@@ -243,7 +241,7 @@ class EasyToolApp(tk.Tk):
             frame,
             text="Create View",
             style="Tool.TButton",
-            command=lambda: open_view_creation(self)
+            command=lambda: open_view_creation(self,parent)
         ).grid(
             row=0,
             column=1,
@@ -255,7 +253,7 @@ class EasyToolApp(tk.Tk):
             frame,
             text="Edit Configspec",
             style="Tool.TButton",
-            command=lambda: edit_configspec(self)
+            command=lambda: edit_configspec(self,parent)
         ).grid(
             row=0,
             column=2,
@@ -267,7 +265,7 @@ class EasyToolApp(tk.Tk):
             frame,
             text="Projectconfig.mak",
             style="Tool.TButton",
-            command=lambda: update_project_config(self)
+            command=lambda: update_project_config(self,parent)
         ).grid(
             row=1,
             column=0,
@@ -280,7 +278,7 @@ class EasyToolApp(tk.Tk):
             frame,
             text="Load Labels",
             style="Tool.TButton",
-            command=lambda: open_label_update(self)
+            command=lambda: open_label_update(self,parent)
         ).grid(
             row=1,
             column=1,
@@ -320,7 +318,7 @@ class EasyToolApp(tk.Tk):
             frame,
             text="Beyond Compare",
             style="Tool.TButton",
-            command=lambda: beyond_compare(self)
+            command=lambda: beyond_compare(self,parent)
         ).grid(
             row=2,
             column=1,
@@ -457,14 +455,14 @@ class EasyToolApp(tk.Tk):
             )
 
         buttons = [
-            ("ADOKU", lambda: open_ADOKU_creation(self)),
-            ("Patching", lambda: open_patching(self)),
-            ("DiagDB", lambda: open_diagdb_creation(self)),
-            ("Resource Generation", lambda: open_resource_generation(self)),
-            ("Copy To Release", lambda: open_copy_to_release(self)),
-            ("WORM", lambda: open_worm_folder_creation(self)),
-            ("Check WORM", lambda: open_check_format(self)),
-            ("Deliver WORM", lambda: open_deliver_to_worm(self))
+            ("ADOKU", lambda: open_ADOKU_creation(self, parent)),
+            ("Patching", lambda: open_patching(self, parent)),
+            ("DiagDB", lambda: open_diagdb_creation(self, parent)),
+            ("Resource Generation", lambda: open_resource_generation(self, parent)),
+            ("Copy To Release", lambda: open_copy_to_release(self, parent)),
+            ("WORM", lambda: open_worm_folder_creation(self, parent)),
+            ("Check WORM", lambda: open_check_format(self, parent)),
+            ("Deliver WORM", lambda: open_deliver_to_worm(self, parent))
         ]
 
         for index, (text, command) in enumerate(buttons):
@@ -588,65 +586,6 @@ class EasyToolApp(tk.Tk):
         )
 
 
-
-
-    # =========================================================
-    # LOG PANEL
-    # =========================================================
-    def _build_log_panel(self, parent):
-        frame = ttk.LabelFrame(
-            parent,
-            text="Logs",
-            style="Panel.TLabelframe"
-        )
-        frame.grid(
-            row=2,
-            column=0,
-            columnspan=2,
-            sticky="nsew",
-            pady=(8, 0)
-        )
-
-        frame.columnconfigure(0, weight=1)
-        frame.rowconfigure(0, weight=1)
-
-        self.log_text = tk.Text(
-            frame,
-            height=4,
-            wrap="word",
-            font=("Consolas", 9),
-            bg="#ffffff",
-            fg="#111111",
-            relief="sunken",
-            borderwidth=1,
-            padx=6,
-            pady=5
-        )
-        self.log_text.grid(
-            row=0,
-            column=0,
-            sticky="ew"
-        )
-
-        scrollbar = ttk.Scrollbar(
-            frame,
-            orient="vertical",
-            command=self.log_text.yview
-        )
-        scrollbar.grid(
-            row=0,
-            column=1,
-            sticky="ns",
-            padx=(5, 0)
-        )
-
-        self.log_text.configure(
-            yscrollcommand=scrollbar.set,
-            state="disabled"
-        )
-
-        self.write_log("Application Ready")
-
     # =========================================================
     # BOTTOM STATUS BAR
     # =========================================================
@@ -689,11 +628,6 @@ class EasyToolApp(tk.Tk):
     # =========================================================
     # HELPERS
     # =========================================================
-    def write_log(self, message):
-        self.log_text.configure(state="normal")
-        self.log_text.insert("end", f"{message}\n")
-        self.log_text.see("end")
-        self.log_text.configure(state="disabled")
 
     def set_progress(self, value):
         value = max(0, min(100, value))
@@ -712,17 +646,6 @@ class EasyToolApp(tk.Tk):
 
         self.update_idletasks()
 
-    def action(self, name, progress=None):
-
-        if progress is not None:
-            self.set_progress(progress)
-
-        self.write_log("=" * 60)
-        self.write_log(f"Action : {name}")
-        self.write_log("Status : SUCCESS")
-        self.write_log("=" * 60)
-
-        self.status_text.set("READY")
 
 
     def _close(self) -> None:
