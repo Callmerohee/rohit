@@ -31,8 +31,8 @@ class EasyToolApp(tk.Tk):
     def __init__(self) -> None:
         super().__init__()
         self.title("EasyTool")
-        self.geometry("920x290")
-        self.minsize(820, 290)
+        self.geometry("500x320")
+        self.minsize(500, 357)
         self.protocol("WM_DELETE_WINDOW", self._close)
         # -----------------------------------------------------
         # APPLICATION VARIABLES
@@ -157,57 +157,68 @@ class EasyToolApp(tk.Tk):
             padding=7
         )
         main.pack(fill="both", expand=True)
-
-        main.columnconfigure(0, weight=1, uniform="main")
-        main.columnconfigure(1, weight=1, uniform="main")
-
-        main.rowconfigure(0, weight=0)
+        main.columnconfigure(0, weight=1)
         main.rowconfigure(1, weight=0)
         main.rowconfigure(2, weight=0)
 
-        left_panel = ttk.Frame(
-            main,
-            style="Main.TFrame"
-        )
-        left_panel.grid(
-            row=0,
+        # Build Project and Integration Tools now share one section.
+        # Each feature group is displayed on its own notebook tab.
+        self._build_tools_section(main)
+
+        information_row = ttk.Frame(main, style="Main.TFrame")
+        information_row.grid(
+            row=1,
             column=0,
-            rowspan=2,
-            sticky="nsew",
-            padx=(0, 4)
+            sticky="ew",
+            pady=(7, 0)
         )
+        information_row.columnconfigure(0, weight=1, uniform="information")
+        information_row.columnconfigure(1, weight=1, uniform="information")
 
-        right_panel = ttk.Frame(
-            main,
-            style="Main.TFrame"
-        )
-        right_panel.grid(
-            row=0,
-            column=1,
-            rowspan=2,
-            sticky="nsew",
-            padx=(4, 0)
-        )
+        view_panel = ttk.Frame(information_row, style="Main.TFrame")
+        view_panel.grid(row=0, column=0, sticky="nsew", padx=(0, 4))
+        view_panel.columnconfigure(0, weight=1)
 
-        left_panel.columnconfigure(0, weight=1)
-        right_panel.columnconfigure(0, weight=1)
+        cpu_panel = ttk.Frame(information_row, style="Main.TFrame")
+        cpu_panel.grid(row=0, column=1, sticky="nsew", padx=(4, 0))
+        cpu_panel.columnconfigure(0, weight=1)
 
-        self._build_project_panel(left_panel)
-
-        self._build_view_panel(left_panel)
-
-        self._build_integration_panel(right_panel)
-        self._build_cpu_panel(right_panel)
+        self._build_view_panel(view_panel)
+        self._build_cpu_panel(cpu_panel)
+        self._build_progress_panel(main)
         self._build_bottom_status_bar()
+
+    def _build_tools_section(self, parent):
+        section = ttk.LabelFrame(
+            parent,
+            text="Project & Integration Tools",
+            style="Panel.TLabelframe"
+        )
+        section.grid(row=0, column=0, sticky="nsew")
+        section.columnconfigure(0, weight=1)
+        section.rowconfigure(0, weight=1)
+
+        notebook = ttk.Notebook(section)
+        notebook.grid(row=0, column=0, sticky="nsew")
+
+        build_tab = ttk.Frame(notebook, style="Main.TFrame", padding=7)
+        integration_tab = ttk.Frame(notebook, style="Main.TFrame", padding=7)
+        build_tab.columnconfigure(0, weight=1)
+        integration_tab.columnconfigure(0, weight=1)
+
+        notebook.add(build_tab, text="Build Project")
+        notebook.add(integration_tab, text="Integration Tools")
+
+        self._build_project_panel(build_tab)
+        self._build_integration_panel(integration_tab)
 
     # =========================================================
     # BUILD PROJECT PANEL
     # =========================================================
     def _build_project_panel(self, parent):
-        frame = ttk.LabelFrame(
+        frame = ttk.Frame(
             parent,
-            text="Build Project",
-            style="Panel.TLabelframe"
+            style="Main.TFrame"
         )
         frame.grid(
             row=0,
@@ -409,36 +420,52 @@ class EasyToolApp(tk.Tk):
 
         progress_row.columnconfigure(0, weight=1)
 
+    def _build_progress_panel(self, parent):
+        frame = ttk.Frame(
+            parent,
+            style="Main.TFrame"
+        )
+
+        frame.grid(
+            row=2,
+            column=0,
+            sticky="ew",
+            pady=(8, 2)
+        )
+
+        frame.columnconfigure(0, weight=1)
+
         self.progress = ttk.Progressbar(
-            progress_row,
+            frame,
             maximum=100,
             variable=self.progress_value,
             style="Tool.Horizontal.TProgressbar"
         )
+
         self.progress.grid(
             row=0,
             column=0,
-            sticky="ew"
+            sticky="ew",
+            padx=(0, 5)
         )
 
         ttk.Label(
-            progress_row,
+            frame,
             textvariable=self.progress_text,
             width=5
         ).grid(
             row=0,
             column=1,
-            padx=(5, 0)
+            sticky="e"
         )
 
     # =========================================================
     # INTEGRATION PANEL
     # =========================================================
     def _build_integration_panel(self, parent):
-        frame = ttk.LabelFrame(
+        frame = ttk.Frame(
             parent,
-            text="Integration Tools",
-            style="Panel.TLabelframe"
+            style="Main.TFrame"
         )
         frame.grid(
             row=0,

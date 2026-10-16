@@ -27,6 +27,7 @@ def configure_logging() -> None:
     formatter = logging.Formatter(
         "%(asctime)s | %(levelname)-8s | %(name)s | %(funcName)s:%(lineno)d | %(message)s"
     )
+    LOG_FILE.write_text("", encoding="utf-8")
     file_handler = RotatingFileHandler(
         LOG_FILE, maxBytes=2_000_000, backupCount=5, encoding="utf-8"
     )
